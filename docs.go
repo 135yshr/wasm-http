@@ -1,0 +1,2 @@
+// / WASM HTTP
+package wasmhttp
