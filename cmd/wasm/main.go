@@ -6,19 +6,24 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+
+	"honnef.co/go/js/dom/v2"
 )
 
 func main() {
 	ctx := context.Background()
-	infoURL, err := url.Parse("https://api.github.com/repos/golang/go/releases/latest")
+	u, err := url.Parse("/data/dummy.txt")
 	if err != nil {
 		panic(err)
 	}
 
-	_, err = downloadFile(ctx, infoURL)
+	body, err := downloadFile(ctx, u)
 	if err != nil {
 		panic(err)
 	}
+
+	div := dom.GetWindow().Document().CreateElement("div")
+	div.SetInnerHTML(string(body))
 
 	fmt.Println("Downloaded file")
 }
