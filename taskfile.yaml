@@ -1,7 +1,11 @@
 version: '3'
 
 tasks:
-  build:
+  server:
+    cmds:
+      - air
+
+  wasm:
     cmds:
     - goreleaser release --snapshot --clean
     - cp -p ./dist/webasm_js_wasm/player.wasm ./web/static/player_sample/
