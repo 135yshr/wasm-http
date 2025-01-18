@@ -1,0 +1,25 @@
+version: '3'
+
+tasks:
+  build:
+    cmds:
+    - goreleaser release --snapshot --clean
+    - cp -p ./dist/webasm_js_wasm/player.wasm ./web/static/player_sample/
+    - cp -p "$(go env GOROOT)/misc/wasm/wasm_exec.js" ./web/static/player_sample/wasm_exec.js
+
+  tinygo:
+    cmds:
+    - mkdir -p ./dist/tinygo
+    - GOOS=js GOARCH=wasm tinygo build -o ./dist/tinygo/player.wasm ./cmd/player/main.go
+    - cp -p ./dist/tinygo/player.wasm ./web/static/player_sample/
+    - cp -p "$(tinygo env TINYGOROOT)/targets/wasm_exec.js" ./web/static/player_sample/wasm_exec.js
+
+  web:
+    - |
+      deno run --allow-read \
+        --allow-net=0.0.0.0:4507 \
+        https://deno.land/std@0.177.0/http/file_server.ts \
+        ./web/static/player_sample
+
+  test:
+    - go test -v ./...
