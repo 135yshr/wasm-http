@@ -12,7 +12,7 @@ import (
 
 func main() {
 	ctx := context.Background()
-	u, err := url.Parse("/data/dummy.txt")
+	u, err := url.Parse("http://localhost:8080/data/dummy.txt")
 	if err != nil {
 		panic(err)
 	}
@@ -24,6 +24,11 @@ func main() {
 
 	div := dom.GetWindow().Document().CreateElement("div")
 	div.SetInnerHTML(string(body))
+	preview := dom.GetWindow().Document().GetElementsByTagName("preview")
+	if len(preview) == 0 {
+		panic("preview tag does not found")
+	}
+	preview[0].AppendChild(div)
 
 	fmt.Println("Downloaded file")
 }
@@ -36,7 +41,7 @@ func downloadFile(ctx context.Context, url *url.URL) ([]byte, error) {
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("failed to download info: %w", err)
+		return nil, fmt.Errorf("failed to download file: %w", err)
 	}
 	defer resp.Body.Close()
 
